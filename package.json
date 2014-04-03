@@ -1,0 +1,25 @@
+{
+  "name": "todos",
+  "version": "0.0.1",
+  "main": "app/js/index.js",
+  "dependencies":{
+    "q": "*",
+    "pouchdb": "*",
+    "chance": "*"
+  },
+  "devDependencies": {
+    "browserify": "*",
+    "grunt": "*",
+    "grunt-browserify": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "node-sass": "*",
+    "karma": "*",
+    "karma-chrome-launcher":"*",
+    "karma-jasmine":"*",
+    "jasmine-node": "*"
+
+  }
+}

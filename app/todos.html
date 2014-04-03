@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <link rel="stylesheet" href="css/app.css"/>
+
+</head>
+
+<body ng-app="app">
+
+
+<h2>Todo</h2>
+
+<div ng-controller="PouchController">
+    <div class="label label-info">{{remaining()}} of {{todos.length}} remaining</div>
+    <a href="" class="btn btn-default" ng-click="clean()">Remove done</a>
+    <ul>
+        <li ng-repeat="todo in todos">
+            <input type="checkbox" ng-model="todo.done" ng-click="update(todo)" />
+            <span ng-class="{done:todo.done}">{{todo.text}}</span>
+        </li>
+    </ul>
+    <form class="form-horizontal" ng-submit="add()">
+        <input class="form-control" type="text" ng-model="todoText" size="30" placeholder="Enter todo" />
+        <input class="btn btn-primary form-control" type="submit" value="Add" />
+    </form>
+</div>
+
+<script src="lib/pouchdb/dist/pouchdb-nightly.min.js"></script>
+<script src="lib/angular/angular.min.js"></script>
+<script src="js/common/pouchdb.js"></script>
+<script src="js/tasks.js"></script>
+
+<script>
+    angular.module('app', [
+        'app.tasks',
+        'app.common.pouchdb'
+    ]);
+
+</script>
+
+</body>
+</html>
