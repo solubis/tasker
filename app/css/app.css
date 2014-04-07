@@ -7674,19 +7674,22 @@ body {
 /* line 93, ../../sass/app.scss */
 .list-group-item .tools:hover {
   opacity: 1.0 !important;
-  cursor: pointer;
   color: #ca5b45;
   text-shadow: 0 0 1px black, 0 0 10px rgba(199, 107, 107, 0.8);
   -webkit-transform: scale(1.3);
   -ms-transform: scale(1.3);
   transform: scale(1.3);
 }
-/* line 105, ../../sass/app.scss */
+/* line 104, ../../sass/app.scss */
+.list-group-item:hover {
+  cursor: pointer;
+}
+/* line 106, ../../sass/app.scss */
 .list-group-item:hover .tools {
   display: block;
   opacity: .2;
 }
-/* line 111, ../../sass/app.scss */
+/* line 112, ../../sass/app.scss */
 .list-group-item .stripe {
   position: absolute;
   top: 0em;
@@ -7696,26 +7699,26 @@ body {
   height: 100%;
 }
 
-/* line 123, ../../sass/app.scss */
+/* line 124, ../../sass/app.scss */
 .form-group .label {
   color: #000000;
   padding-right: 0em;
   padding-left: 0;
   font-size: 100%;
 }
-/* line 130, ../../sass/app.scss */
+/* line 131, ../../sass/app.scss */
 .form-group .dropdown {
   padding-right: 0.6em;
   padding-left: 0.4;
   font-size: 100%;
 }
 
-/* line 137, ../../sass/app.scss */
+/* line 138, ../../sass/app.scss */
 .dropdown-toggle, .dropdown-menu a {
   cursor: pointer;
 }
 
-/* line 141, ../../sass/app.scss */
+/* line 142, ../../sass/app.scss */
 .main {
   top: 40px;
   bottom: 0;
@@ -7725,26 +7728,26 @@ body {
   right: 0;
   position: relative;
 }
-/* line 150, ../../sass/app.scss */
+/* line 151, ../../sass/app.scss */
 .main .list-group {
   width: 100%;
 }
 
-/* line 156, ../../sass/app.scss */
+/* line 157, ../../sass/app.scss */
 .navbar-default .navbar-toggle {
   border: none;
 }
 
-/* line 162, ../../sass/app.scss */
+/* line 163, ../../sass/app.scss */
 .navbar .btn {
   height: 40px;
   margin: 1px;
 }
-/* line 166, ../../sass/app.scss */
+/* line 167, ../../sass/app.scss */
 .navbar .container {
   padding-left: 0px;
 }
-/* line 169, ../../sass/app.scss */
+/* line 170, ../../sass/app.scss */
 .navbar .collapse {
   border-top: 1px solid #e7e7e7;
   margin-left: -15px;
@@ -7752,19 +7755,19 @@ body {
   padding-right: 15px;
   padding-left: 15px;
 }
-/* line 176, ../../sass/app.scss */
+/* line 177, ../../sass/app.scss */
 .navbar .inner {
   -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
 }
 
 @media (max-width: 767px) {
-  /* line 184, ../../sass/app.scss */
+  /* line 185, ../../sass/app.scss */
   .visible-xs.collapse.in {
     display: block !important;
   }
 
-  /* line 187, ../../sass/app.scss */
+  /* line 188, ../../sass/app.scss */
   .visible-xs.collapse {
     display: none !important;
   }

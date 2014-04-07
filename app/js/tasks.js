@@ -3,19 +3,24 @@
 angular.module('app.tasks', ['app.common.pouchdb'])
 
     .controller('TaskController', function ($scope, TaskDatabase) {
-      var db = TaskDatabase;
+      var db;
 
       $scope.dates = ['Today', 'Tomorrow', 'Next', 'Someday'];
       $scope.repeats = ['None', 'Every Day', 'Every Week', 'Every Month', 'Every Year'];
       $scope.priorities = ['Low', 'Medium', 'High', 'Critical'];
       $scope.hours = ['+1', '+2', '+4', '+8', '+10'];
 
-      $scope.load = function () {
-        console.log("Loading...");
-
-        db.all()
+      $scope.init = function () {
+        TaskDatabase
+            .then(function (result) {
+              db = result;
+              db.all()
+            })
             .then(function (result) {
               $scope.tasks = result;
+            })
+            .catch(function (error) {
+              console.log('Error (' + error.name + ') : ' + error.message);
             });
       };
 
@@ -32,20 +37,16 @@ angular.module('app.tasks', ['app.common.pouchdb'])
       };
 
       $scope.initialize = function () {
-        console.log('\nInitializing database...');
 
         db.clean()
             .then(function () {
               return db.populate();
             })
             .then(function (result) {
-              $scope.$apply(function () {
-                $scope.tasks = result;
-              });
+              $scope.tasks = result;
             })
             .catch(function (error) {
               console.log('Error (' + error.name + ') : ' + error.message);
-              console.log(error.stack);
             });
       };
     })
@@ -74,14 +75,21 @@ angular.module('app.tasks', ['app.common.pouchdb'])
 
         db.remove($scope.task)
             .then(function () {
-                $scope.tasks.splice(index, 1);
+              $scope.tasks.splice(index, 1);
+            })
+            .catch(function (error) {
+              console.log('Error (' + error.name + ') : ' + error.message);
             });
       };
 
       $scope.update = function (event) {
         event.stopPropagation();
 
-        db.update($scope.task);
+        db.update($scope.task)
+            .catch(function (error) {
+              console.log('Error (' + error.name + ') : ' + error.message);
+            });
+
       };
 
       $scope.priorityStyle = {'background-color': color};
@@ -90,51 +98,59 @@ angular.module('app.tasks', ['app.common.pouchdb'])
 
     .factory('TaskDatabase', function ($q, Database) {
       var i,
-          db = new Database('tasks');
+          deferred = $q.defer();
 
-      db.populate = function () {
-        var periods = ['year', 'month', 'week', 'day'],
-            tasks = [
-              'Opis scope i transclude',
-              'Przywieźć drążek do podciągania z garażu',
-              'Responsive tasker - Bootstrap, Everlive, Firebase'
-            ];
+      new Database('tasks')
+          .then(function (db) {
+            db.populate = function () {
+              var periods = ['year', 'month', 'week', 'day'],
+                  tasks = [
+                    'Opis scope i transclude',
+                    'Przywieźć drążek do podciągania z garażu',
+                    'Responsive tasker - Bootstrap, Everlive, Firebase'
+                  ];
 
-        console.log("Populating...");
+              console.log("Populating...");
 
-        var promises = [];
+              var promises = [];
 
-        for (i = 0; i < 20; i++) {
+              for (i = 0; i < 20; i++) {
 
-          var promise = db.create({
-            name: chance.pick(tasks),
-            date: chance.date({string: true, american: false}),
-            priority: chance.integer({min: 0, max: 2}),
-            worked: chance.integer({min: 0, max: 999}),
-            toComplete: chance.integer({min: 0, max: 999}),
-            repeat: {
-              period: chance.pick(periods),
-              every: chance.integer({min: 1, max: 12})
-            }
+                var promise = db.create({
+                  name: chance.pick(tasks),
+                  date: chance.date({string: true, american: false}),
+                  priority: chance.integer({min: 0, max: 2}),
+                  worked: chance.integer({min: 0, max: 999}),
+                  toComplete: chance.integer({min: 0, max: 999}),
+                  repeat: {
+                    period: chance.pick(periods),
+                    every: chance.integer({min: 1, max: 12})
+                  }
+                });
+
+                promises.push(promise);
+              }
+
+              return $q.all(promises);
+            };
+
+            db.empty = function () {
+              return {
+                name: 'New task',
+                date: new Date(),
+                priority: 0,
+                worked: 0,
+                toComplete: 0
+              }
+            };
+
+            deferred.resolve(db);
+          })
+          .catch(function (error) {
+            deferred.reject(error);
           });
 
-          promises.push(promise);
-        }
-
-        return $q.all(promises);
-      };
-
-      db.empty = function () {
-        return {
-          name: 'New task',
-          date: new Date(),
-          priority: 0,
-          worked: 0,
-          toComplete: 0
-        }
-      };
-
-      return db;
+      return deferred.promise;
     });
 
 
@@ -142,27 +158,30 @@ function PouchController($scope, Database) {
 
   $scope.todos = [];
 
-  $scope.db = new Database('todos');
+  new Database('todos')
+      .then(function (db) {
+        $scope.db = db;
 
-  $scope.db.all()
-      .then(function (response) {
-        $scope.load(response.rows);
-      })
-      .catch(function (error) {
-        console.log(error);
+        db.all()
+            .then(function (response) {
+              $scope.load(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
       });
+
 
   $scope.load = function (todos) {
     for (var i = 0; i < todos.length - 1; i++) {
       var todo = todos[i];
-      $scope.db.get(todo.id)
+
+      $scope.db.get(todo._id)
           .then(function (doc) {
-            $scope.$apply(function () {
               $scope.todos.push(doc);
-            });
           })
           .catch(function (error) {
-            console.log(error);
+            console.log(error.message);
           });
     }
   };
@@ -172,9 +191,12 @@ function PouchController($scope, Database) {
       text: $scope.todoText,
       done: false
     };
-    $scope.todos.push(newTodo);
-    $scope.todoText = '';
-    $scope.db.create(newTodo);
+
+    $scope.db.create(newTodo)
+        .then(function (result) {
+          $scope.todos.push(result);
+          $scope.todoText = '';
+        });
   };
 
   $scope.update = function (todo) {
@@ -183,6 +205,7 @@ function PouchController($scope, Database) {
 
   $scope.remaining = function () {
     var count = 0;
+
     angular.forEach($scope.todos, function (todo) {
       count += todo.done ? 0 : 1;
     });
@@ -191,6 +214,7 @@ function PouchController($scope, Database) {
 
   $scope.clean = function () {
     var oldTodos = $scope.todos;
+
     $scope.todos = [];
     angular.forEach(oldTodos, function (todo) {
       if (!todo.done) {

@@ -1,108 +1,51 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+    <meta charset="utf-8"/>
+</head>
+
 <body>
 
 <script src="lib/pouchdb/dist/pouchdb-nightly.js"></script>
-<script src="lib/chance/chance.js"></script>
+<script src="lib/q/q.js"></script>
 
 <script>
 
-    var _db, _databaseName;
+    var done,
+        error,
+        db = null;
 
-    var Database = function (databaseName) {
-        _db = new PouchDB(databaseName);
-        _databaseName = databaseName;
-    };
+    var clean = function () {
+        var deferred = Q.defer();
 
-    Database.prototype.clean = function () {
+        console.log("Cleaning...1");
 
-        console.log("Cleaning...");
+        PouchDB.destroy('test', function (error) {
+            if (error) {
+                console.log(error.message);
+                deferred.reject(error);
+            }
 
-        return PouchDB.destroy(_databaseName)
-            .then(function () {
+            console.log("Creating database...1");
 
-                console.log("Created database...");
+            db = new PouchDB('test');
 
-                _db = PouchDB(_databaseName);
-            });
-    };
-
-    Database.prototype.get = function (obj) {
-
-        var _id = (typeof obj === 'object' ? obj.id : obj);
-
-        return _db.get(_id);
-    };
-
-    Database.prototype.create = function (record) {
-        return _db.post(record)
-            .then(function (result) {
-                return _db.get(result.id)
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    };
-
-    Database.prototype.empty = function () {
-        return {
-            name: 'New task',
-            date: new Date(),
-            priority: 0,
-            worked: 0,
-            toComplete: 0
-        }
-    };
-
-    Database.prototype.populate = function () {
-        var periods = ['year', 'month', 'week', 'day'],
-            tasks = [
-                'Opis scope i transclude',
-                'Przywieźć drążek do podciągania z garażu',
-                'Responsive tasker - Bootstrap, Everlive, Firebase'
-            ],
-            promises = [];
-
-        console.log("Populating...");
-
-        for (var i = 0; i < 20; i++) {
-
-            var promise = db.create({
-                name: chance.pick(tasks),
-                date: chance.date({string: true, american: false}),
-                priority: chance.integer({min: 0, max: 2}),
-                worked: chance.integer({min: 0, max: 999}),
-                toComplete: chance.integer({min: 0, max: 999}),
-                repeat: {
-                    period: chance.pick(periods),
-                    every: chance.integer({min: 1, max: 12})
-                }
-            });
-
-            promises.push(promise);
-        }
-
-        return $q.all(promises);
-    };
-
-
-    var db = new Database('test');
-
-   db.clean()
-        .then(function () {
-            return db.populate();
-        })
-        .then(function (result) {
-            console.log(JSON.stringify(result));
-        })
-        .catch(function (error) {
-            console.log('Error (' + error.name + ') : ' + error.message);
-            console.log(error.stack);
+            deferred.resolve();
         });
 
+        return deferred.promise;
+    };
+
+    clean()
+        .then(function () {
+            done = true;
+            console.log("Done...1");
+
+        })
+        .catch(function (e) {
+            error = e;
+        });
 
 </script>
 

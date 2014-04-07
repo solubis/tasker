@@ -11,7 +11,8 @@ module.exports = function (config) {
     files: [
       'app/lib/angular/angular.js',
       'app/lib/angular-mocks/angular-mocks.js',
-      'app/lib/pouchdb/dist/pouchdb-nightly.min.js',
+      'app/lib/pouchdb/dist/pouchdb-nightly.js',
+      'app/lib/chance/chance.js',
       'app/js/**/*.js',
       'test/**/*-spec.js'
     ],
@@ -57,7 +58,7 @@ module.exports = function (config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
+    browsers: ['Chrome','Firefox', 'ChromeCanary'],
 
 
     // If browser does not capture in given timeout [ms], kill it

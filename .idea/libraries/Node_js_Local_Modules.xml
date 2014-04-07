@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="Node.js Local Modules" type="javaScript">
+    <properties>
+      <option name="frameworkName" value="node_modules" />
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/node_modules/jasmine-node" />
+        <item url="file://$PROJECT_DIR$/node_modules/q" />
+        <item url="file://$PROJECT_DIR$/node_modules/pouchdb" />
+        <item url="file://$PROJECT_DIR$/node_modules/chance" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/node_modules/jasmine-node" />
+      <root url="file://$PROJECT_DIR$/node_modules/q" />
+      <root url="file://$PROJECT_DIR$/node_modules/pouchdb" />
+      <root url="file://$PROJECT_DIR$/node_modules/chance" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

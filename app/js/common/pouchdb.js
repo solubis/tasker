@@ -8,7 +8,7 @@ angular.module('app.common.pouchdb', [])
           _pouch,
           _databaseName;
 
-      var toPromise = function (fn) {
+      var _promise = function (fn) {
         return function () {
           var args,
               callback,
@@ -17,11 +17,11 @@ angular.module('app.common.pouchdb', [])
           deferred = $q.defer();
 
           callback = function (err, res) {
-              if (err) {
-                return deferred.reject(err);
-              } else {
-                return deferred.resolve(res);
-              }
+            if (err) {
+              return deferred.reject(err);
+            } else {
+              return deferred.resolve(res);
+            }
           };
 
           args = arguments != null ? Array.prototype.slice.call(arguments) : [];
@@ -32,56 +32,78 @@ angular.module('app.common.pouchdb', [])
         };
       };
 
-      var _config = function(databaseName){
+      var _connect = function (databaseName, proxy) {
+        var deferred = $q.defer();
+
         _databaseName = databaseName;
-        _pouch = new PouchDB(_databaseName);
 
-        _db = {
-          id: _pouch.id,
-          put: toPromise(_pouch.put),
-          post: toPromise(_pouch.post),
-          get: toPromise(_pouch.get),
-          remove: toPromise(_pouch.remove),
-          bulkDocs: toPromise(_pouch.bulkDocs),
-          allDocs: toPromise(_pouch.allDocs),
-          changes: function(options) {
-            var clone;
-            clone = angular.copy(options);
-            clone.onChange = function(change) {
-              return $rootScope.$apply(function() {
-                return options.onChange(change);
-              });
-            };
-            return _pouch.changes(clone);
-          },
-          putAttachment: toPromise(_pouch.putAttachment),
-          getAttachment: toPromise(_pouch.getAttachment),
-          removeAttachment: toPromise(_pouch.removeAttachment),
-          query: toPromise(_pouch.query),
-          info: toPromise(_pouch.info),
-          compact: toPromise(_pouch.compact),
-          revsDiff: toPromise(_pouch.revsDiff)
-        };
+        new PouchDB(_databaseName)
+            .then(function (pouch) {
+              _pouch = pouch;
+              _db = {
+                id: _pouch.id,
+                put: _promise(_pouch.put),
+                post: _promise(_pouch.post),
+                get: _promise(_pouch.get),
+                remove: _promise(_pouch.remove),
+                bulkDocs: _promise(_pouch.bulkDocs),
+                allDocs: _promise(_pouch.allDocs),
+                putAttachment: _promise(_pouch.putAttachment),
+                getAttachment: _promise(_pouch.getAttachment),
+                removeAttachment: _promise(_pouch.removeAttachment),
+                query: _promise(_pouch.query),
+                info: _promise(_pouch.info),
+                compact: _promise(_pouch.compact),
+                revsDiff: _promise(_pouch.revsDiff),
+                changes: function (options) {
+                  var clone;
+                  clone = angular.copy(options);
+                  clone.onChange = function (change) {
+                    return $rootScope.$apply(function () {
+                      return options.onChange(change);
+                    });
+                  };
+                  return _pouch.changes(clone);
+                }
+              };
+                deferred.resolve(proxy);
+            })
+            .catch(function (error) {
+              deferred.reject(error);
+            });
 
-        return _db;
+        return deferred.promise;
+
       };
 
 
       var Database = function (databaseName) {
-        _db = _config(databaseName);
+        return _connect(databaseName, this);
       };
 
       Database.prototype.clean = function () {
+        var deferred = $q.defer();
 
         console.log("Cleaning...");
 
-        return PouchDB.destroy(_databaseName)
-            .then(function () {
+        PouchDB.destroy(_databaseName, function (error) {
+          if (error) {
+            return deferred.reject(error);
+          }
 
-              console.log("Creating database...");
+          console.log("Creating database...");
 
-              _db = _config(_databaseName);
-            });
+          _connect(_databaseName)
+              .then(function (result) {
+                return deferred.resolve(result);
+              }).catch(function (error) {
+                return deferred.reject(error);
+              });
+
+          console.log("Done creating database...");
+        });
+
+        return deferred.promise;
       };
 
       Database.prototype.all = function () {
@@ -103,7 +125,6 @@ angular.module('app.common.pouchdb', [])
       };
 
       Database.prototype.get = function (obj) {
-
         var _id = (typeof obj === 'object' ? obj.id : obj);
 
         return _db.get(_id);
