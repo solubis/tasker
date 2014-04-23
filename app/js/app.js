@@ -27,7 +27,7 @@ angular.module('app', [
       $rootScope.filters = [
         'Today',
         'Tomorrow',
-        'Next 7 days',
+        'Week',
         'All'
       ];
 

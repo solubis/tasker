@@ -14,7 +14,7 @@ module.exports = function (config) {
       'app/lib/pouchdb/dist/pouchdb-nightly.js',
       'app/lib/chance/chance.js',
       'app/js/**/*.js',
-      'test/**/*-spec.js'
+      'test/unit/**/*-spec.js'
     ],
 
 
@@ -58,7 +58,7 @@ module.exports = function (config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome','Firefox', 'ChromeCanary'],
+    browsers: ['Chrome'],
 
 
     // If browser does not capture in given timeout [ms], kill it

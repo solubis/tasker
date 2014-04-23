@@ -7,6 +7,8 @@
     <option name="importPaths">
       <list>
         <option value="$MODULE_DIR$/app/lib/bootstrap-sass/vendor/assets/stylesheets" />
+        <option value="$USER_HOME$/.rvm/gems/ruby-2.1.1/gems/compass-0.12.4/frameworks/compass/stylesheets" />
+        <option value="$USER_HOME$/.rvm/gems/ruby-2.1.1/gems/compass-0.12.4/frameworks/blueprint/stylesheets" />
       </list>
     </option>
   </component>

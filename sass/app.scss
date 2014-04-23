@@ -139,6 +139,17 @@ body {
   cursor: pointer;
 }
 
+.form-control.small {
+  width: 3em;
+  padding: 3px 4px;
+  display: inline;
+  text-align: right;
+}
+
+.label.inline {
+  margin-left: 1rem;
+}
+
 .main {
   top: $main-top;
   bottom: 0;

@@ -3,86 +3,67 @@
     <h4>Number of tasks: {{ tasks.length}}</h4>
 
     <div class="list-group">
-        <div class="list-group-item" ng-repeat="task in tasks" ng-controller="TaskItemController">
+
+        <div class="list-group-item"
+             ng-repeat="task in tasks track by task._id | filter: filter | orderBy: orderBy"
+             ng-controller="TaskItemController">
 
             <div ng-switch="selected">
 
                 <div ng-switch-when="true">
-
                     <div class="stripe" ng-style="priorityStyle" ng-if="priorityStyle != false"></div>
 
                     <form role="form">
+
                         <div class="form-group">
                             <input class="form-control" placeholder="Enter task name" ng-model="task.name">
                         </div>
 
                         <div class="form-group">
-                             <span class="label">
-                                Work to complete:
-                            </span>
-                            <input style="width:5rem;display:inline" class="form-control"
-                                   ng-model="task.toComplete">
-                            <span class="label" style="margin-left: 1em">Already worked: </span>
-                               <span class="dropdown dropup">
-                                <a class="dropdown-toggle">
-                                    {{ task.worked }}
-                                </a>
+                            <input class="form-control small" ng-model="task.toComplete">
+                            <span class="label">hours to complete</span>
+                            <span class="label inline">Already worked</span>
+                            <span class="dropdown">
+                                <a class="dropdown-toggle">{{ task.worked }}</a>
                                 <ul class="dropdown-menu">
                                     <li ng-repeat="hour in hours">
                                         <a>{{ hour }}</a>
                                     </li>
                                 </ul>
                             </span>
+                            <span class="label">hours</span>
                         </div>
 
                         <div class="form-group">
-
-                            <span class="label">
-                                Deadline:
-                            </span>
-
-                            <span class="dropdown dropup">
-                                <a class="dropdown-toggle">
-                                    {{ task.date | date:'yyyy-MM-dd'}}
-                                </a>
+                            <span class="label">On</span>
+                            <span class="dropdown">
+                                <a class="dropdown-toggle">{{ task.date | date:'yyyy-MM-dd'}}</a>
                                 <ul class="dropdown-menu">
                                     <li ng-repeat="date in dates">
                                         <a>{{ date }}</a>
                                     </li>
                                 </ul>
                             </span>
-
-                            <span class="label">
-                                Repeat every
-                            </span>
-
-                            <span class="dropdown dropup">
-                                <a class="dropdown-toggle">
-                                    {{ task.repeat.period }}
-                                </a>
+                            <span class="label">Repeat every</span>
+                            <span class="dropdown">
+                                <a class="dropdown-toggle">{{ task.repeat.period }}</a>
                                 <ul class="dropdown-menu">
                                     <li ng-repeat="period in repeats">
                                         <a>{{ period }}</a>
                                     </li>
                                 </ul>
                             </span>
-
-
-
-                            <span class="dropdown dropup">
+                            <span class="dropdown">
                                 <a class="dropdown-toggle">
                                     {{ task.priority | priority}}
                                 </a>
-                                <span class="label">
-                                Priority
-                            </span>
+                                <span class="label">priority</span>
                                 <ul class="dropdown-menu">
                                     <li ng-repeat="priority in priorities">
                                         <a>{{ priority }}</a>
                                     </li>
                                 </ul>
                             </span>
-
                         </div>
 
                         <button class="btn btn-primary" ng-click="update($event);close($event)">Submit</button>
@@ -96,8 +77,8 @@
                     <div class="stripe" ng-style="priorityStyle" ng-if="priorityStyle != false"></div>
                     <div class="title">{{ task.name }}</div>
 
-                    <span class="subtitle label label-info"></i>{{ task.worked }} : {{ task.toComplete }}</span>
-                    <span class="date label label-warning">{{ task.date | date:'yyyy-MM-dd'}}</span>
+                    <span class="subtitle label label-info">{{ task.toComplete }}</span>
+                    <span class="date label label-warning">{{ task.date | date:'dd-MM-yyyy'}}</span>
 
                     <i class="tools glyphicon glyphicon-remove" ng-click="remove($event, $index)"></i>
                     <i class="tools glyphicon glyphicon-ok"></i>
@@ -107,5 +88,4 @@
             </div>
         </div>
     </div>
-
 </div>
