@@ -8,11 +8,14 @@ angular.module('app', [
   'app.common.filters',
 
   'ngAnimate',
+  'ngSanitize',
 
-  'ui.router',
-  'ui.bootstrap'
+  'ui.bootstrap.datepicker',
+  'ui.bootstrap.dropdownToggle',
+
+  'ui.router'
 ])
-    .config(function ($urlRouterProvider, $stateProvider) {
+    .config(function ($urlRouterProvider, $stateProvider, datepickerConfig) {
       $urlRouterProvider.otherwise('/');
 
       $stateProvider
@@ -20,21 +23,22 @@ angular.module('app', [
             url: '/',
             templateUrl: 'views/tasks.html'
           });
+
+      angular.extend(datepickerConfig, {
+        showWeeks: false
+      });
     })
 
-    .run(function ($rootScope) {
+    .run(function ($rootScope, alert) {
+      var $scope = $rootScope;
 
-      $rootScope.filters = [
-        'Today',
-        'Tomorrow',
-        'Week',
-        'All'
-      ];
+      $scope.filters = ['Today', 'Tomorrow', 'All tasks'];
+      $scope.sorts = ['Sort 1', 'Sort 2', 'Sort 3'];
 
-      $rootScope.sorts = [
-        'By date',
-        'By priority',
-        'By name'
-      ];
+      $scope.options = {
+        filter: 1,
+        sort: 2
+      }
 
+      $scope.alert = alert;
     });

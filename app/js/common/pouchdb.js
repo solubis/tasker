@@ -50,7 +50,10 @@ angular.module('app.common.pouchdb', [])
       };
 
       Database.prototype.update = function (record) {
-        return $q.when(_db.put(record));
+        return $q.when(_db.put(record))
+            .then(function (result) {
+              record._rev = result.rev;
+            });
       };
 
       Database.prototype.remove = function (record) {

@@ -1,0 +1,8 @@
+<a href="" class="dropdown-toggle" role="button">
+    {{ selected.text }} <b class="caret" ng-show="caret"></b>
+</a>
+<ul class="dropdown-menu">
+    <li ng-repeat="choice in choices">
+        <a href ng-click="selected.index = $index">{{ choice }}</a>
+    </li>
+</ul>

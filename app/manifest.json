@@ -4,11 +4,11 @@
   "version": "0.1",
   "app": {
     "background": {
-      "scripts": ["app/js/chrome.js"]
+      "scripts": ["js/chrome.js"]
     }
   },
   "permissions": [
     "storage"
   ],
-  "icons": { "48": "app/assets/images/icon.png" }
+  "icons": { "48": "assets/images/icon.png" }
 }

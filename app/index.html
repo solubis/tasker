@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-    <title>Tasks - Bootstrap</title>
+    <title>Tasker</title>
 
     <link rel="stylesheet" type="text/css" href="css/app.css">
     <link rel="stylesheet" href="lib/angular-toaster/toaster.css"/>
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 
 </head>
 
@@ -24,9 +26,7 @@
 <header class="navbar navbar-default navbar-fixed-top">
     <div class="inner">
         <div class="container">
-
             <ul class="nav navbar-nav">
-
                 <li>
                     <button class="btn btn-primary" ng-click="create()">Add Task</button>
                 </li>
@@ -35,30 +35,13 @@
                     <button class="btn btn-info" ng-click="populate()">Create Database</button>
                 </li>
 
-                <li class="dropdown">
-                    <a href="" class="dropdown-toggle" role="button">
-                        Sort <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="choice in sorts">
-                            <a href ng-click="sort($index)">{{ choice }}</a>
-                        </li>
-                    </ul>
+                <li class="dropdown" choices="filters" caret="true" index="options.filter">
                 </li>
 
-                <li class="dropdown">
-                    <a href=""  class="dropdown-toggle" role="button">
-                        Filter <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="choice in filters">
-                            <a href ng-click="filter($index)">{{ choice }}</a>
-                        </li>
-                    </ul>
+                <li class="dropdown" choices="sorts" caret="true" index="options.sort">
                 </li>
 
             </ul>
-
         </div>
     </div>
 </header>
@@ -78,9 +61,17 @@
 
 <script src="lib/angular/angular.js"></script>
 <script src="lib/angular-animate/angular-animate.js"></script>
+<script src="lib/angular-sanitize/angular-sanitize.js"></script>
 <script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
-<script src="lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="lib/angular-toaster/toaster.js"></script>
+
+<!--------------------  Angular Bootstrap  -------------------->
+
+<!--script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script-->
+<script src="../angular-bootstrap/src/position/position.js"></script>
+<script src="../angular-bootstrap/src/dropdownToggle/dropdownToggle.js"></script>
+<script src="../angular-bootstrap/src/datepicker/datepicker.js"></script>
+
 
 <!--------------------  Application Scripts  -------------------->
 

@@ -1,0 +1,35 @@
+<div class="popover" tabindex="-1">
+    <div class="arrow"></div>
+    <h3 class="popover-title" ng-bind-html="title" ng-show="title"></h3>
+
+    <div class="popover-content">
+        <ul role="menu" class="dropdown-menu">
+            <li role="presentation">
+                <a role="menuitem" href="">Test</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" href="">Test</a>
+            </li>
+        </ul>
+        <form name="popoverForm">
+
+            <div class="form-group">
+                <label class="control-label"><i class="fa fa-calendar"></i> Date
+                </label>
+                <input type="text" class="form-control"
+                       data-autoclose="1"
+                       data-animation="none"
+                       data-date-format="yyyy-MM-dd"
+                       data-date-type="number"
+                       ng-model="selectedDate"
+                       name="date"
+                       bs-datepicker>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-danger" ng-click="$hide()">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="popover.saved=true;$hide()">Save changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

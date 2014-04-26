@@ -2,6 +2,52 @@
 
 angular.module('app.common.directives', [])
 
+    .directive('choices', function () {
+      return {
+        restrict: 'AE',
+        scope: {
+          choices: '=',
+          caret: '@',
+          index: '='
+        },
+        controller: function () {
+        },
+        link: function (scope) {
+
+          if (!scope.index) {
+            scope.index = 0;
+          }
+
+          scope.selected = {
+            index: scope.index,
+            text: scope.choices[scope.index]
+          };
+
+          scope.$watch('selected.index', function (value) {
+            scope.index = value;
+            scope.selected.text = scope.choices[value];
+          });
+        },
+        templateUrl: 'views/choices.tmpl.html'
+      };
+    })
+
+    .directive('form', function ($timeout) {
+      return {
+        restrict: 'E',
+        link: function (scope, element) {
+          var inputs = element.find('input');
+          angular.forEach(inputs, function (item) {
+            item = angular.element(item);
+            var autofocus =item.attr('focus');
+            if (autofocus != undefined) {
+              $timeout(function(){item[0].focus();});
+            }
+          });
+        }
+      }
+    })
+
     .directive('listGroup', function () {
       return {
         restrict: 'AC',
@@ -23,10 +69,6 @@ angular.module('app.common.directives', [])
           this.unselect = function (item) {
             item.selected = false;
           }
-
-        },
-        link: function (scope, element, attrs) {
-
         }
       };
     })
@@ -38,23 +80,23 @@ angular.module('app.common.directives', [])
         scope: true,
         controller: function ($scope, $element, $attrs) {
         },
-        link: function (scope, element, attrs, listController) {
+        link: function (scope, element, attrs, listGroup) {
 
           scope.selected = false;
 
           scope.close = function (event) {
             event.stopPropagation();
-            listController.unselect(scope);
+            listGroup.unselect(scope);
           }
 
-          listController.addItem(scope);
+          listGroup.addItem(scope);
 
           function handler(event) {
             event.preventDefault();
             event.stopPropagation();
 
             scope.$apply(function () {
-              listController.select(scope);
+              listGroup.select(scope);
             });
           }
 

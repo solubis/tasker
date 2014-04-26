@@ -9,6 +9,7 @@
     "angular-bootstrap": "*",
     "angular-loading-bar": "*",
     "angular-toaster": "solubis/angular-toaster",
+    "angular-sanitize": "*",
     "chance": "*",
     "pouchdb": "*",
     "modernizr": "*",

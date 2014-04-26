@@ -1,41 +1,8 @@
 'use strict';
 
-/* ToDo refactor to Controller As
-
- <!-- In Your Binding -->
- <div ng-controller="MyCtrl as ctrl">
- <span></span>
- </div>
-
- //In your route
- $routeProvider
- .when('/',{
- templateUrl: 'foo.html',
- controller: 'MyCtrl',
- controllerAs: 'ctrl'
- });
-
-
- // In controler
- var MyCtrl = function(){
- this.name = 'Techno Fattie';
- };
-
- app.controller('MyCtrl', MyCtrl);
-
- http://www.technofattie.com/2014/03/21/five-guidelines-for-avoiding-scope-soup-in-angular.html
-
- */
-
 angular.module('app.tasks', ['app.common.pouchdb'])
 
     .controller('TaskController', function ($scope, $db) {
-
-      $scope.dates = ['Today', 'Tomorrow', 'Next', 'Someday'];
-      $scope.repeats = ['None', 'Every Day', 'Every Week', 'Every Month', 'Every Year'];
-      $scope.priorities = ['Low', 'Medium', 'High', 'Critical'];
-      $scope.hours = ['+1', '+2', '+4', '+8', '+10'];
-
       $scope.orderBy = '-priority';
       $scope.filterValue = 'today';
       $scope.filter = function (actual) {
@@ -74,8 +41,6 @@ angular.module('app.tasks', ['app.common.pouchdb'])
 
         var promise = $db.create(record);
 
-        console.log('');
-
         promise
             .then(function (record) {
               $scope.tasks.unshift(record);
@@ -100,21 +65,32 @@ angular.module('app.tasks', ['app.common.pouchdb'])
     })
 
     .controller('TaskItemController', function ($scope, $db) {
-      var priority = $scope.task.priority,
-          color;
+      $scope.selectedDate = 0;
+      $scope.selectedRepeat = 0;
+      $scope.selectedPriority = 0;
 
-      switch (priority) {
-        case 0:
-          color = 'white';
-          break;
-        case 1:
-          color = 'rgba(17,120,200,1)';
-          break;
-        case 2:
-          color = '#ca5b45';
-          break;
-        default:
-          color = 'white';
+      $scope.dates = ['Today', 'Tomorrow', 'Next', 'Someday'];
+      $scope.repeats = ['None', 'Every Day', 'Every Week', 'Every Month', 'Every Year'];
+      $scope.priorities = ['Low', 'Medium', 'High', 'Critical'];
+      $scope.hours = ['+1', '+2', '+4', '+8', '+10'];
+
+
+      $scope.$watch('selected', function(value){
+        if (!value){
+          $scope.opened = false;
+        }
+      });
+
+      $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.opened = true;
+      };
+
+      $scope.addHours = function(text){
+        var add = parseInt(text.substr(1), 10);
+        $scope.task.worked = $scope.task.worked + add;
       }
 
       $scope.remove = function (event, index) {
@@ -138,7 +114,26 @@ angular.module('app.tasks', ['app.common.pouchdb'])
             });
       };
 
-      $scope.priorityStyle = {'background-color': color};
+      $scope.$watch('task.priority', function(value){
+        var color;
+
+        switch (value) {
+          case 0:
+            color = 'white';
+            break;
+          case 1:
+            color = 'rgba(17,120,200,1)';
+            break;
+          case 2:
+            color = '#ca5b45';
+            break;
+          default:
+            color = 'white';
+        }
+
+        $scope.stripe = {'background-color': color};
+
+      });
 
     })
 
@@ -147,7 +142,6 @@ angular.module('app.tasks', ['app.common.pouchdb'])
 
       $db.populate = function () {
         var i,
-            periods = ['year', 'month', 'week', 'day'],
             tasks = [
               'Opis scope i transclude',
               'Przywieźć drążek do podciągania z garażu',
@@ -164,10 +158,7 @@ angular.module('app.tasks', ['app.common.pouchdb'])
             priority: chance.integer({min: 0, max: 2}),
             worked: chance.integer({min: 0, max: 999}),
             toComplete: chance.integer({min: 0, max: 999}),
-            repeat: {
-              period: chance.pick(periods),
-              every: chance.integer({min: 1, max: 12})
-            }
+            repeat: chance.integer({min: 0, max: 3})
           });
 
           promises.push(promise);
