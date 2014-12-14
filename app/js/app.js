@@ -2,13 +2,11 @@
 
 angular.module('app', [
 
-  'app.tasks',
   'app.common.directives',
   'app.common.services',
   'app.common.filters',
 
-  'ngAnimate',
-  'ngSanitize',
+  'app.tasks',
 
   'ui.bootstrap.datepicker',
   'ui.bootstrap.dropdownToggle',
@@ -32,13 +30,13 @@ angular.module('app', [
     .run(function ($rootScope, alert) {
       var $scope = $rootScope;
 
-      $scope.filters = ['Today', 'Tomorrow', 'All tasks'];
-      $scope.sorts = ['Sort 1', 'Sort 2', 'Sort 3'];
+      $scope.filters = ['Today', 'Tomorrow', 'Next 7 days', 'All tasks', 'Done'];
+      $scope.sorts = ['By Name', 'By Date', 'By Priority'];
 
       $scope.options = {
-        filter: 1,
-        sort: 2
-      }
+        filter: 3,
+        sort: 1
+      };
 
       $scope.alert = alert;
     });

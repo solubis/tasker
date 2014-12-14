@@ -366,8 +366,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.eot");
-  src: url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
+  src: url("../lib/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot");
+  src: url("../lib/bootstrap-sass/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("../lib/bootstrap-sass/vendor/assets/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
 }
 
 /* line 25, ../lib/bootstrap-sass/vendor/assets/stylesheets/bootstrap/_glyphicons.scss */
@@ -7900,65 +7900,80 @@ body {
   overflow: hidden;
 }
 
-/* line 27, ../../sass/app.scss */
+/* line 29, ../../sass/app.scss */
 .btn {
   border: none;
 }
 
-/* line 31, ../../sass/app.scss */
+/* line 33, ../../sass/app.scss */
 .list-group {
+  width: 100%;
   position: absolute;
   top: -3px;
   bottom: 0;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
+/* line 41, ../../sass/app.scss */
+.list-group .header {
+  background-color: whitesmoke;
+  color: #ca5b45;
+  border-top: 1px solid gainsboro;
+  font-weight: bold;
+  font-size: 1.1em;
+  left: 0px;
+  width: 100%;
+  padding: 4px 0px 4px 10px;
+  z-index: 2 !important;
+}
 
-/* line 39, ../../sass/app.scss */
+/* line 54, ../../sass/app.scss */
 .list-group-item {
   position: relative;
+  background-color: white;
+  border: 0px;
+  border-top: 1px solid #dddddd !important;
 }
-/* line 43, ../../sass/app.scss */
+/* line 61, ../../sass/app.scss */
+.list-group-item.done {
+  background-color: whitesmoke !important;
+}
+/* line 65, ../../sass/app.scss */
 .list-group-item .title {
-  font-size: 1.2rem;
+  display: inline-block;
+  font-size: 1.3rem;
+  width: 25em;
 }
-/* line 47, ../../sass/app.scss */
+/* line 71, ../../sass/app.scss */
 .list-group-item .subtitle {
   width: 5rem;
-  margin-right: 30%;
   display: inline-block;
 }
-/* line 53, ../../sass/app.scss */
-.list-group-item .date {
-  width: 7rem;
-  display: inline-block;
-  margin-right: 10%;
-}
-/* line 59, ../../sass/app.scss */
+/* line 76, ../../sass/app.scss */
 .list-group-item .glyphicon {
   top: 4px;
 }
-/* line 63, ../../sass/app.scss */
+/* line 80, ../../sass/app.scss */
 .list-group-item .tools {
   display: none;
   margin-right: 0.6em;
   float: right;
   font-size: 1.5rem;
 }
-/* line 69, ../../sass/app.scss */
+/* line 86, ../../sass/app.scss */
 .list-group-item .tools:hover {
   opacity: 0.6 !important;
 }
-/* line 74, ../../sass/app.scss */
+/* line 91, ../../sass/app.scss */
 .list-group-item:hover {
   cursor: pointer;
 }
-/* line 76, ../../sass/app.scss */
+/* line 93, ../../sass/app.scss */
 .list-group-item:hover .tools {
   display: block;
   opacity: .2;
 }
-/* line 82, ../../sass/app.scss */
+/* line 99, ../../sass/app.scss */
 .list-group-item .stripe {
   position: absolute;
   top: 0em;
@@ -7967,54 +7982,44 @@ body {
   width: 0.5rem;
   height: 100%;
 }
-
-/* line 93, ../../sass/app.scss */
-.popover-menu {
-  position: relative;
-  top: 100%;
-  left: 0;
-  display: inline-block;
-  float: left;
-  min-width: 160px;
-  list-style: none;
-  font-size: 13px;
-  text-align: left;
-  background-color: white;
-}
-
-/* line 107, ../../sass/app.scss */
-.form-group .label {
-  color: #000000;
-  padding-right: 0em;
-  padding-left: 0;
-  font-size: 100%;
-}
-/* line 114, ../../sass/app.scss */
-.form-group .dropdown {
-  padding-right: 0.6em;
-  padding-left: 0.4;
-  font-size: 100%;
-}
-
-/* line 121, ../../sass/app.scss */
-.dropdown-menu {
-  min-width: 100px;
-}
-
-/* line 125, ../../sass/app.scss */
-.dropdown-toggle, .dropdown-menu a {
-  cursor: pointer;
-}
-
-/* line 129, ../../sass/app.scss */
-.form-control.small {
+/* line 111, ../../sass/app.scss */
+.list-group-item .form-group .form-control.small {
   width: 3em;
   padding: 3px 4px;
   display: inline;
   text-align: right;
 }
+/* line 118, ../../sass/app.scss */
+.list-group-item .form-group .date {
+  width: 7em;
+  display: inline-block;
+  margin-right: 10px;
+}
+/* line 124, ../../sass/app.scss */
+.list-group-item .form-group .label {
+  color: #000000;
+  padding-right: 0em;
+  padding-left: 0;
+  font-size: 100%;
+}
+/* line 131, ../../sass/app.scss */
+.list-group-item .form-group .dropdown {
+  padding-right: 0.6em;
+  padding-left: 0.4;
+  font-size: 100%;
+}
 
-/* line 139, ../../sass/app.scss */
+/* line 140, ../../sass/app.scss */
+.dropdown-menu {
+  min-width: 100px;
+}
+
+/* line 144, ../../sass/app.scss */
+.dropdown-toggle, .dropdown-menu a {
+  cursor: pointer;
+}
+
+/* line 148, ../../sass/app.scss */
 .main {
   top: 45px;
   bottom: 0;
@@ -8024,56 +8029,30 @@ body {
   right: 0;
   position: relative;
 }
-/* line 148, ../../sass/app.scss */
-.main .list-group {
-  width: 100%;
-}
 
-/* line 154, ../../sass/app.scss */
-.navbar-default .navbar-toggle {
-  border: none;
-}
-
-/* line 160, ../../sass/app.scss */
+/* line 159, ../../sass/app.scss */
 .navbar .btn {
   height: 40px;
   margin: 1px;
 }
-/* line 164, ../../sass/app.scss */
+/* line 163, ../../sass/app.scss */
 .navbar .container {
   padding-left: 0px;
   margin-left: 0px;
 }
-/* line 168, ../../sass/app.scss */
-.navbar .collapse {
-  border-top: 1px solid #e7e7e7;
-  margin-left: -15px;
-  margin-right: -15px;
-  padding-right: 15px;
-  padding-left: 15px;
-}
-/* line 175, ../../sass/app.scss */
+/* line 167, ../../sass/app.scss */
 .navbar .inner {
   -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.175);
 }
-/* line 179, ../../sass/app.scss */
-.navbar .fa-bars {
-  font-size: 1.6em;
-  cursor: pointer;
-  width: 0.8em;
-  line-height: 0.5em;
-  margin-top: 5px;
-  padding-bottom: 0px;
-}
 
 @media (max-width: 767px) {
-  /* line 192, ../../sass/app.scss */
+  /* line 175, ../../sass/app.scss */
   .visible-xs.collapse.in {
     display: block !important;
   }
 
-  /* line 195, ../../sass/app.scss */
+  /* line 178, ../../sass/app.scss */
   .visible-xs.collapse {
     display: none !important;
   }

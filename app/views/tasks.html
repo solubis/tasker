@@ -1,75 +1,70 @@
-<div ng-init="init()">
+<div ng-init="init()" ng-controller="TaskListController">
 
-    <div class="list-group">
+    <list class="list-group">
 
-        <div class="list-group-item"
-             ng-repeat="task in tasks track by task._id | filter: filter | orderBy: orderBy"
+        <list-item
+             ng-repeat="task in tasks | taskDateFilter: selectedFilter | orderBy: selectedOrder | groupBy:groupField track by task._id "
              ng-controller="TaskItemController">
 
-            <div ng-switch="selected">
+            <div class="header" ng-if="task.groupChanged">{{groupHeader()}}</div>
 
-                <div ng-switch-when="true">
+            <div ng-switch="selected && !task.done" class="list-group-item" ng-class="{done: task.done}">
+
+                <div ng-switch-when="true" >
                     <div class="stripe" ng-style="stripe" ng-if="stripe != false"></div>
 
                     <form role="form">
 
-                        <div class="form-group" >
-                            <input class="form-control" focus placeholder="Enter task name" ng-model="task.name">
+                        <div class="form-group">
+                            <input class="form-control" data-focus placeholder="Enter task name" ng-model="formData.name">
                         </div>
 
                         <div class="form-group">
-                            <input class="form-control small" ng-model="task.toComplete">
+                            <input class="form-control small" ng-model="formData.toComplete">
                             <span class="label">h to complete, </span>
-
-                            <span class="label inline">already</span>
-                            <span class="dropdown">
-                                <a class="dropdown-toggle">{{ task.worked }}</a>
-                                <ul class="dropdown-menu">
-                                    <li ng-repeat="hour in hours">
-                                        <a ng-click="addHours(hour)">{{ hour }}</a>
-                                    </li>
-                                </ul>
-                            </span>
+                            <span class="label">already</span>
+                            <span class="dropdown" choices="hours" text="{{formData.worked}}"
+                                  on-choice="addHours(choice)"></span>
                         </div>
 
                         <div class="form-group">
                             <span class="label">On</span>
 
-                            <input class="form-control" style="width:7em;display:inline"
+                            <input class="form-control date"
                                    datepicker-popup="dd-MM-yyyy"
-                                   ng-model="task.date"
-                                   is-open="opened"
-                                   type="text" class="form-control"
-                                   ng-click="open($event)">
+                                   ng-model="formData.date"
+                                   is-open="datepickerPopupIsOpen"
+                                   type="text"
+                                   ng-click="openDatepickerPopup($event)">
 
                             <span class="label">Repeat </span>
-                            <span class="dropdown" choices="repeats" index="task.repeat"></span>
+                            <span class="dropdown" choices="repeats" choice="formData.repeat"></span>
 
                             <span class="label">Priority </span>
-                            <span class="dropdown" choices="priorities" index="task.priority"></span>
+                            <span class="dropdown" choices="priorities" choice="formData.priority"></span>
 
                         </div>
 
                         <button class="btn btn-primary" ng-click="update($event);close($event)">Submit</button>
-                        <button class="btn btn-default" ng-click="close($event)">Cancel</button>
+                        <button class="btn btn-default" ng-click="cancel($event);close($event)">Cancel</button>
 
                     </form>
 
                 </div>
 
                 <div ng-switch-default>
-                    <div class="stripe" ng-style="stripe" ng-if="stripe != false"></div>
+                    <div class="stripe" ng-if="!task.done" ng-style="stripe" ng-if="stripe != false"></div>
                     <div class="title">{{ task.name }}</div>
 
-                    <span class="subtitle label label-info">{{ task.toComplete }}</span>
-                    <span class="date label label-warning">{{ task.date | date:'dd-MM-yyyy'}}</span>
-
                     <i class="tools glyphicon glyphicon-remove" ng-click="remove($event, $index)"></i>
-                    <i class="tools glyphicon glyphicon-ok"></i>
-                    <i class="tools glyphicon glyphicon-time"></i>
+                    <i class="tools glyphicon glyphicon-ok" ng-click="complete($event)"></i>
+
+                    <span class="subtitle label label-info" ng-if="!task.done">{{ task.toComplete }}</span>
+                    <span class="date label label-warning" ng-if="!task.done">{{ task.date | date:'dd-MM-yyyy'}}</span>
+
                 </div>
 
             </div>
-        </div>
-    </div>
+        </list-item>
+    </list>
 </div>

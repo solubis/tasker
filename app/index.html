@@ -15,7 +15,7 @@
 
 </head>
 
-<body ng-app="app" ng-controller="TaskController">
+<body ng-app="app">
 
 <!-------------------- Toaster -------------------->
 
@@ -28,19 +28,18 @@
         <div class="container">
             <ul class="nav navbar-nav">
                 <li>
-                    <button class="btn btn-primary" ng-click="create()">Add Task</button>
+                    <button class="btn btn-primary" ng-click="$broadcast('addTask')">Add Task</button>
                 </li>
 
                 <li>
-                    <button class="btn btn-info" ng-click="populate()">Create Database</button>
+                    <button class="btn btn-info" ng-click="$broadcast('populateDatabase')">Create Database</button>
                 </li>
 
-                <li class="dropdown" choices="filters" caret="true" index="options.filter">
+                <li class="dropdown" data-caret="true" data-choices="filters" data-choice="options.filter">
                 </li>
 
-                <li class="dropdown" choices="sorts" caret="true" index="options.sort">
+                <li class="dropdown" data-caret="true" data-choices="sorts" data-choice="options.sort">
                 </li>
-
             </ul>
         </div>
     </div>
@@ -55,7 +54,7 @@
 <script src="lib/modernizr/modernizr.js"></script>
 <script src="lib/fastclick/lib/fastclick.js"></script>
 <script src="lib/chance/chance.js"></script>
-<script src="lib/pouchdb/dist/pouchdb-nightly.js"></script>
+<script src="lib/pouchdb/dist/pouchdb.js"></script>
 
 <!--------------------  Angular Scripts  -------------------->
 
@@ -67,7 +66,6 @@
 
 <!--------------------  Angular Bootstrap  -------------------->
 
-<!--script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script-->
 <script src="../angular-bootstrap/src/position/position.js"></script>
 <script src="../angular-bootstrap/src/dropdownToggle/dropdownToggle.js"></script>
 <script src="../angular-bootstrap/src/datepicker/datepicker.js"></script>

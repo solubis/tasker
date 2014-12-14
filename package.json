@@ -5,7 +5,11 @@
   "dependencies":{
     "q": "*",
     "pouchdb": "*",
-    "chance": "*"
+    "chance": "*",
+    "express": "*",
+    "restify": "*",
+    "mongoose": "*",
+    "body-parser": "*"
   },
   "devDependencies": {
     "browserify": "*",

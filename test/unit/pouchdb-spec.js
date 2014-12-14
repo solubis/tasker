@@ -2,33 +2,11 @@ describe('pouchdb', function () {
   var Database, $rootScope, TaskDatabase;
 
   beforeEach(module('app.tasks'));
-  beforeEach(inject(function (_$rootScope_, _Database_, _TaskDatabase_) {
+  beforeEach(inject(function (_$rootScope_, _Database_, $db) {
     Database = _Database_;
     $rootScope = _$rootScope_;
-    TaskDatabase = _TaskDatabase_;
+    TaskDatabase = $db;
   }));
-
-  iit("should clean database with Database.clean", function (done) {
-    var error,
-        db = null;
-
-    db = new Database('test');
-
-    db.connect()
-        .then(function (result) {
-          db = result;
-          return db.clean();
-        })
-        .catch(function (e) {
-          error = e;
-        })
-        .finally(function () {
-          done();
-
-          expect(error).toBeUndefined();
-          expect(db).toNotBe(null);
-        });
-  });
 
   it("should allow you to store and retrieve documents", function (done) {
     var retrieved,

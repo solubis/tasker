@@ -8,25 +8,32 @@ angular.module('app.common.directives', [])
         scope: {
           choices: '=',
           caret: '@',
-          index: '='
+          choice: '=',
+          text: '@',
+          onChoice: '&'
         },
         controller: function () {
         },
-        link: function (scope) {
+        link: function (scope, element, attrs) {
+          scope.label = scope.text || scope.choices[scope.choice || 0];
 
-          if (!scope.index) {
-            scope.index = 0;
+          if (attrs.text) {
+            attrs.$observe('text', function (value) {
+              scope.label = value;
+            });
           }
 
-          scope.selected = {
-            index: scope.index,
-            text: scope.choices[scope.index]
-          };
+          scope.select = function (index) {
+            var choice = scope.choices[index];
 
-          scope.$watch('selected.index', function (value) {
-            scope.index = value;
-            scope.selected.text = scope.choices[value];
-          });
+            if (scope.choice != undefined) {
+              scope.choice = index;
+            }
+
+            scope.onChoice({choice: choice});
+
+            scope.label = scope.text || choice;
+          };
         },
         templateUrl: 'views/choices.tmpl.html'
       };
@@ -39,18 +46,20 @@ angular.module('app.common.directives', [])
           var inputs = element.find('input');
           angular.forEach(inputs, function (item) {
             item = angular.element(item);
-            var autofocus =item.attr('focus');
+            var autofocus = item.attr('focus');
             if (autofocus != undefined) {
-              $timeout(function(){item[0].focus();});
+              $timeout(function () {
+                item[0].focus();
+              });
             }
           });
         }
       }
     })
 
-    .directive('listGroup', function () {
+    .directive('list', function () {
       return {
-        restrict: 'AC',
+        restrict: 'AE',
         controller: function () {
           var me = this;
 
@@ -73,21 +82,20 @@ angular.module('app.common.directives', [])
       };
     })
 
-    .directive('listGroupItem', function () {
+    .directive('listItem', function () {
       return {
-        restrict: 'AC',
-        require: '^listGroup',
+        restrict: 'AE',
+        require: '^list',
         scope: true,
         controller: function ($scope, $element, $attrs) {
         },
         link: function (scope, element, attrs, listGroup) {
-
-          scope.selected = false;
+          scope.selectedIndex = false;
 
           scope.close = function (event) {
             event.stopPropagation();
             listGroup.unselect(scope);
-          }
+          };
 
           listGroup.addItem(scope);
 

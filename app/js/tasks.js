@@ -2,34 +2,11 @@
 
 angular.module('app.tasks', ['app.common.pouchdb'])
 
-    .controller('TaskController', function ($scope, $db) {
-      $scope.orderBy = '-priority';
-      $scope.filterValue = 'today';
-      $scope.filter = function (actual) {
-        var today;
-
-        today = new Date().getDate();
-
-        if ($scope.filterValue) {
-          switch ($scope.filterValue.toLowerCase()) {
-            case 'all':
-            {
-              return true;
-            }
-            case 'today':
-            {
-              return actual.date !== today;
-            }
-          }
-        }
-
-        return true;
-      };
-
+    .controller('TaskListController', function ($scope, $db) {
       $scope.init = function () {
         $db.all()
             .then(function (result) {
-              $scope.tasks = result;
+              $scope.tasks = $scope.original = result; // TODO filtering?
             })
             .catch(function (error) {
               console.log('Error (' + error.name + ') : ' + error.message);
@@ -39,9 +16,7 @@ angular.module('app.tasks', ['app.common.pouchdb'])
       $scope.create = function () {
         var record = $db.record;
 
-        var promise = $db.create(record);
-
-        promise
+        $db.create(record)
             .then(function (record) {
               $scope.tasks.unshift(record);
             })
@@ -62,9 +37,32 @@ angular.module('app.tasks', ['app.common.pouchdb'])
               console.log('Error (' + error.name + ') : ' + error.message);
             });
       };
+
+      $scope.$on('addTask', $scope.create);
+      $scope.$on('populateDatabase', $scope.populate);
+
+      $scope.$watch('options.sort', function (value) {
+        switch (value) {
+          case 0:
+            $scope.selectedOrder = '+name';
+            break;
+          case 1:
+            $scope.selectedOrder = '+date';
+            break;
+          case 2:
+            $scope.selectedOrder = '-priority';
+            break;
+        }
+
+        $scope.groupField = $scope.selectedOrder.substr(1);
+      });
+
+      $scope.$watch('options.filter', function setFilter(value) {
+        $scope.selectedFilter = value;
+      });
     })
 
-    .controller('TaskItemController', function ($scope, $db) {
+    .controller('TaskItemController', function ($scope, $db, $filter) {
       $scope.selectedDate = 0;
       $scope.selectedRepeat = 0;
       $scope.selectedPriority = 0;
@@ -74,24 +72,38 @@ angular.module('app.tasks', ['app.common.pouchdb'])
       $scope.priorities = ['Low', 'Medium', 'High', 'Critical'];
       $scope.hours = ['+1', '+2', '+4', '+8', '+10'];
 
+      //TODO otwarcie datepickera poprzez ustawienie zmiennej w scope controllera?
 
-      $scope.$watch('selected', function(value){
-        if (!value){
-          $scope.opened = false;
+      $scope.$watch('selected', function (value) {
+        if (!value) {
+          $scope.datepickerPopupIsOpen = false;
+        } else {
+          $scope.formData = angular.copy($scope.task);
         }
       });
 
-      $scope.open = function($event) {
-        $event.preventDefault();
-        $event.stopPropagation();
+      $scope.openDatepickerPopup = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-        $scope.opened = true;
+        $scope.datepickerPopupIsOpen = true;
       };
 
-      $scope.addHours = function(text){
+      $scope.groupHeader = function(){
+        switch($scope.groupField){
+          case 'priority':
+            return $scope.priorities[$scope.task.priority];
+          case 'date':
+            return $filter('date')($scope.task.date, 'dd MMMM yyyy');
+          case 'name':
+            return $scope.task.name;
+        }
+      };
+
+      $scope.addHours = function (text) {
         var add = parseInt(text.substr(1), 10);
-        $scope.task.worked = $scope.task.worked + add;
-      }
+        $scope.formData.worked = $scope.formData.worked + add;
+      };
 
       $scope.remove = function (event, index) {
         event.stopPropagation();
@@ -105,16 +117,28 @@ angular.module('app.tasks', ['app.common.pouchdb'])
             });
       };
 
+      $scope.complete = function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        $scope.task.done = !$scope.task.done;
+      };
+
       $scope.update = function (event) {
         event.stopPropagation();
 
-        $db.update($scope.task)
+        $db.update($scope.formData)
+            .then(function () {
+              angular.copy($scope.formData, $scope.task);
+            })
             .catch(function (error) {
               console.log('Error (' + error.name + ') : ' + error.message);
             });
       };
 
-      $scope.$watch('task.priority', function(value){
+      // TODO Stripe refaktoring
+
+      $scope.$watch('task.priority', function (value) {
         var color;
 
         switch (value) {
@@ -132,7 +156,6 @@ angular.module('app.tasks', ['app.common.pouchdb'])
         }
 
         $scope.stripe = {'background-color': color};
-
       });
 
     })
@@ -148,13 +171,13 @@ angular.module('app.tasks', ['app.common.pouchdb'])
               'Responsive tasker - Bootstrap, Everlive, Firebase'
             ];
 
-        var promises = [];
+        var promises = [], today = new Date();
 
-        for (i = 0; i < 20; i++) {
+        for (i = 0; i < 100; i++) {
 
           var promise = this.create({
             name: chance.pick(tasks),
-            date: chance.date({string: false, american: false}),
+            date: chance.date({year: 2014, month: today.getMonth(), hour:0, minute:0, second:0, millisecond:0, string: false, american: false}),
             priority: chance.integer({min: 0, max: 2}),
             worked: chance.integer({min: 0, max: 999}),
             toComplete: chance.integer({min: 0, max: 999}),
@@ -176,4 +199,55 @@ angular.module('app.tasks', ['app.common.pouchdb'])
       };
 
       return $db;
+    })
+
+    .filter('taskDateFilter', function () {
+      return function (items, value) {
+        var today,
+            tomorrow,
+            yesterday,
+            week,
+            filteredItems;
+
+        if (!items) {
+          return [];
+        }
+
+        today = new Date();
+        today.setHours(23);
+        today.setMinutes(59);
+        today.setSeconds(59);
+
+        tomorrow = new Date(today.valueOf());
+        yesterday = new Date(today.valueOf());
+        week = new Date(today.valueOf());
+
+        tomorrow.setDate(today.getDate() + 1);
+        yesterday.setDate(today.getDate() - 1);
+        week.setDate(today.getDate() + 7);
+
+        filteredItems = items.filter(function (item) {
+          var time;
+
+          if (!item.date){
+            return value === 3;
+          }
+
+          time = item.date.getTime();
+
+          switch (value) {
+            case 0:
+              return yesterday.getTime() < time && time <= today.getTime();
+            case 1:
+              return yesterday.getTime() < time && time <= tomorrow.getTime();
+            case 2:
+              return yesterday.getTime() < time && time <= week.getTime();
+            default:
+              return true;
+          }
+        });
+
+        return filteredItems;
+      };
     });
+
